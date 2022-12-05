@@ -27,6 +27,9 @@ fun NavHostComposable() {
             composable(ActivityScreens.DashboardScreen.name) {
                 DashBoardComposable()
             }
+            composable(ActivityScreens.SearchScreen.name) {
+                SearchComposable()
+            }
             composable(ActivityScreens.PersonScreen.name) {
                 PersonComposable()
             }

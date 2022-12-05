@@ -5,9 +5,7 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,9 +30,9 @@ fun myBottomNavBar(navController: NavController) {
             })
 
         BottomNavigationItem(icon = {
-            Icon(imageVector = Icons.Default.Person,"")
+            Icon(imageVector = Icons.Default.Search,"")
         },
-            label = { Text(text = "Person") },
+            label = { Text(text = "Search") },
             selected = (selectedIndex.value == 1),
             onClick = {
                 selectedIndex.value = 1
@@ -42,7 +40,7 @@ fun myBottomNavBar(navController: NavController) {
             })
 
         BottomNavigationItem(icon = {
-            Icon(imageVector = Icons.Default.FavoriteBorder,"")
+            Icon(imageVector = Icons.Default.Edit,"")
         },
             label = { Text(text = "Probe") },
             selected = (selectedIndex.value == 2),

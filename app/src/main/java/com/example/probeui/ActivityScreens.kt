@@ -8,10 +8,13 @@ enum class ActivityScreens (
     DashboardScreen(
         body = { DashBoardComposable() }
     ),
-    PersonScreen(
-        body = { PersonComposable() }
+    SearchScreen(
+        body = { SearchComposable() }
     ),
     ProbeUIScreen(
         body = { ProbeUIComposable() }
+    ),
+    PersonScreen(
+        body = { PersonComposable() }
     )
 }
