@@ -1,4 +1,4 @@
-package com.example.probeui
+package com.example.probeui.modules.probeUI
 
 
 import androidx.compose.foundation.background
@@ -13,18 +13,18 @@ import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
+import androidx.navigation.NavController
+import com.example.probeui.R
+import com.example.probeui.core.navigation.EActivityScreens
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ProbeUIComposable() {
+fun ProbeUIComposable(mNavController: NavController) {
 
     val mBottomSheetScaffoldState =
         rememberBottomSheetScaffoldState(bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed))
@@ -57,7 +57,7 @@ fun ProbeUIComposable() {
             }
         },
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        sheetPeekHeight = 10.dp,
+        sheetPeekHeight = 70.dp,
         topBar = {
             TopAppBar(
                 title = { Text("UI Probe") },
@@ -74,16 +74,15 @@ fun ProbeUIComposable() {
                 },
                 actions = {
                     IconButton(
-                        onClick = { println("-> Add") },
-                        content = { Icon(Icons.Rounded.Person, contentDescription = "Add") }
+                        onClick = { mNavController.navigate( EActivityScreens.PersonScreen.name) },
+                        content = { Icon(Icons.Rounded.Person, contentDescription = "Person") }
                     )
                 }
             )
         }
     ) {
         // hier goes the content of BottomSheetScaffold
-        Column(
-        ) {
+        Column {
             Text(
                 text = "UI Probe hier",
                 modifier = Modifier.padding(16.dp)
@@ -143,22 +142,19 @@ fun ProbeUIComposable() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    onClick = { if (mIndex > 0) mIndex -= 1 else mIndex = mList.size-1 },
+                    onClick = { if (mIndex > 0) mIndex -= 1 else mIndex = mList.size - 1 },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Icon(Icons.Default.ArrowBack, contentDescription = "")
                 }
                 Text(text = mList.get(mIndex))
                 Button(
-                    onClick = { if (mIndex < mList.size-1) mIndex += 1 else mIndex = 0 },
+                    onClick = { if (mIndex < mList.size - 1) mIndex += 1 else mIndex = 0 },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Icon(Icons.Default.ArrowForward, contentDescription = "")
                 }
             }
-
-
-
 
         } // end of Column
 
