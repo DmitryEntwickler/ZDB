@@ -11,10 +11,10 @@ class Repositiry {
 
     val mListOfCourses = MutableLiveData(
         listOf(
-            Course(1, Icons.Default.Person, "Bauhelfer", 0F, 5.0, 3, 10, 1),
-            Course(2, Icons.Default.Person, "allseitsstaatlichgeprüfter Fliesenleger", 0.55F, 2.5, 2, 4, 1),
-            Course(3, Icons.Default.Person, "Maler", 0.10F, 4.0, 3, 9, 5),
-            Course(4, Icons.Default.Person, "Koch", 0F, 14.0, 2, 8, 7),
+            Course(1, Icons.Default.Person, "Bauhelfer", 0F, 5.0, 3),
+            Course(2, Icons.Default.Person, "allseitsstaatlichgeprüfter Fliesenleger", 0.55F, 2.5, 2),
+            Course(3, Icons.Default.Person, "Maler", 0.10F, 4.0, 3),
+            Course(4, Icons.Default.Person, "Koch", 0F, 14.0, 2),
         )
     )
 

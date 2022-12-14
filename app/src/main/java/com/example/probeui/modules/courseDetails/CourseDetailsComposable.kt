@@ -39,6 +39,12 @@ fun CourseDetailsComposable(mNavController: NavController, mCourseId: String?) {
     val mListOfAllLections by mRepository.fetchLections().observeAsState()
     val mThisCourseLections = mListOfAllLections?.filterNot { it.mCourseId.toString() != mCourseId }
 
+    val mSections = mThisCourseLections?.maxWithOrNull(Comparator.comparingInt { it.mSection.toInt() })?.mSection
+
+    LaunchedEffect(true){
+        println("-> $mSections")
+    }
+
     Scaffold(
         scaffoldState = mScaffoldState,
 
@@ -111,7 +117,7 @@ fun CourseDetailsComposable(mNavController: NavController, mCourseId: String?) {
                 ) {
                     CheckIcon(Icons.Rounded.Check)
                     Text(
-                        text = "${course.mSections} Abschnitte",
+                        text = "$mSections Abschnitte",
                         style = MaterialTheme.typography.body1,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
@@ -122,7 +128,7 @@ fun CourseDetailsComposable(mNavController: NavController, mCourseId: String?) {
                 ) {
                     CheckIcon(Icons.Rounded.Check)
                     Text(
-                        text = "${course.mLections} Lektionen",
+                        text = "${mThisCourseLections?.size} Lektionen",
                         style = MaterialTheme.typography.body1,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
