@@ -5,7 +5,7 @@ data class Lection(
     val mCourseId: Int,
     val mLectionName: String,
     val mType: ELectionType,
-    val mSection: Short,
+    val mSection: Int,
     val mPositionInSection: Short,
     val mDuration: String,
     val mUrl: String?,

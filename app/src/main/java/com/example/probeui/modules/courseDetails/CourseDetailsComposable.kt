@@ -3,6 +3,7 @@ package com.example.probeui.modules.courseDetails
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -40,10 +41,7 @@ fun CourseDetailsComposable(mNavController: NavController, mCourseId: String?) {
     val mThisCourseLections = mListOfAllLections?.filterNot { it.mCourseId.toString() != mCourseId }
 
     val mSections = mThisCourseLections?.maxWithOrNull(Comparator.comparingInt { it.mSection.toInt() })?.mSection
-
-    LaunchedEffect(true){
-        println("-> $mSections")
-    }
+    val mListOfSections = listOf(1..mSections!!).flatMap { it }
 
     Scaffold(
         scaffoldState = mScaffoldState,
@@ -142,77 +140,32 @@ fun CourseDetailsComposable(mNavController: NavController, mCourseId: String?) {
                 modifier = Modifier.padding(vertical = 8.dp)
             )
 
-            mThisCourseLections?.let { lectionsList ->
-                LazyColumn() {
-                    itemsIndexed(lectionsList) { index, lection ->
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable() { mNavController.navigate(EActivityScreens.LectionScreen.name + "/${lection.mId}/${mCourseId}") },
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column() {
-                                Row() {
-                                    Text(
-                                        text = "${lection.mPositionInSection}",
-                                        modifier = Modifier.width(32.dp)
-                                    )
-                                    Column() {
-                                        Text(
-                                            text = "${lection.mLectionName}",
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text("${lection.mType}  ${lection.mDuration}")
-                                    }
-                                }
-                            }
-                            val icon = when (lection.mType) {
-                                ELectionType.VIDEO -> painterResource(id = R.drawable.play_circle)
-                                ELectionType.AUDIO -> painterResource(id = R.drawable.audio_ic)
-                                else -> painterResource(id = R.drawable.menu_book)
-                            }
-                            Icon(
-                                icon,
-                                contentDescription = null,
-                                modifier = Modifier.size(32.dp)
-                            )
-                        } // end of Row
-
-                        Divider()
-
-                    } // end of ItemsIndexed
-                } // end of Lazy Column
-            }
-
-            /* alte Version
-
-            mCourseSections?.let{ section ->
+            mThisCourseLections.let { lectionsList ->
                 LazyColumn(){
-                    itemsIndexed(section) { index, sectionItem ->
+                    items(mListOfSections) { section ->
 
-                        Column(){
-                            Text(
-                                text = "Abschnitt ${index+1}",
-                                fontWeight = FontWeight.Bold,
-                                style = Typography.h6,
-                            )
+                        Text(
+                            text = "Abschnitt $section",
+                            fontWeight = FontWeight.Bold,
+                            style = Typography.h6
+                        )
 
-                            sectionItem.forEach(){ lection ->
+                        lectionsList.forEach {lection ->
+                            if (lection.mSection == section) {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable() { mNavController.navigate(EActivityScreens.LectionScreen.name + "/${lection.mId}/${mCourseId}") },
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ){
-                                    Column(){
-                                        Row(){
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column() {
+                                        Row() {
                                             Text(
                                                 text = "${lection.mPositionInSection}",
                                                 modifier = Modifier.width(32.dp)
                                             )
-                                            Column(){
+                                            Column() {
                                                 Text(
                                                     text = "${lection.mLectionName}",
                                                     fontWeight = FontWeight.Bold
@@ -231,21 +184,130 @@ fun CourseDetailsComposable(mNavController: NavController, mCourseId: String?) {
                                         contentDescription = null,
                                         modifier = Modifier.size(32.dp)
                                     )
-                                }
-
-
+                                } // end of Row
                                 Divider()
                             }
                         }
-
-                        Divider(Modifier.height(2.dp))
-
-
+                        Divider()
                     }
                 }
+
             }
-            */
+
 
         } // end of Screen Column
     } // end of the content of BottomSheetScaffold
 } // end of Composable
+
+
+
+
+
+
+/* zweite Version: nur Lektionen, ohne Abschnitte
+
+mThisCourseLections.let { lectionsList ->
+    LazyColumn() {
+        itemsIndexed(lectionsList) { index, lection ->
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable() { mNavController.navigate(EActivityScreens.LectionScreen.name + "/${lection.mId}/${mCourseId}") },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column() {
+                    Row() {
+                        Text(
+                            text = "${lection.mPositionInSection}",
+                            modifier = Modifier.width(32.dp)
+                        )
+                        Column() {
+                            Text(
+                                text = "${lection.mLectionName}",
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text("${lection.mType}  ${lection.mDuration}")
+                        }
+                    }
+                }
+                val icon = when (lection.mType) {
+                    ELectionType.VIDEO -> painterResource(id = R.drawable.play_circle)
+                    ELectionType.AUDIO -> painterResource(id = R.drawable.audio_ic)
+                    else -> painterResource(id = R.drawable.menu_book)
+                }
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp)
+                )
+            } // end of Row
+
+            Divider()
+
+        } // end of ItemsIndexed
+    } // end of Lazy Column
+}
+*/
+
+
+/* alte Version: Liste von Listen
+
+mCourseSections?.let{ section ->
+    LazyColumn(){
+        itemsIndexed(section) { index, sectionItem ->
+
+            Column(){
+                Text(
+                    text = "Abschnitt ${index+1}",
+                    fontWeight = FontWeight.Bold,
+                    style = Typography.h6,
+                )
+
+                sectionItem.forEach(){ lection ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable() { mNavController.navigate(EActivityScreens.LectionScreen.name + "/${lection.mId}/${mCourseId}") },
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ){
+                        Column(){
+                            Row(){
+                                Text(
+                                    text = "${lection.mPositionInSection}",
+                                    modifier = Modifier.width(32.dp)
+                                )
+                                Column(){
+                                    Text(
+                                        text = "${lection.mLectionName}",
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text("${lection.mType}  ${lection.mDuration}")
+                                }
+                            }
+                        }
+                        val icon = when (lection.mType) {
+                            ELectionType.VIDEO -> painterResource(id = R.drawable.play_circle)
+                            ELectionType.AUDIO -> painterResource(id = R.drawable.audio_ic)
+                            else -> painterResource(id = R.drawable.menu_book)
+                        }
+                        Icon(
+                            icon,
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
+
+
+                    Divider()
+                }
+            }
+
+            Divider(Modifier.height(2.dp))
+
+
+        }
+    }
+}
+*/
