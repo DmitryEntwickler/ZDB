@@ -9,5 +9,6 @@ data class Course(
     val mProgress: Float,
     val mDuration: Double,
     val mSections: Short,
-    val mLections: Short
+    val mLections: Short,
+    val mPopularity: Short
 )

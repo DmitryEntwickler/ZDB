@@ -10,6 +10,7 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -26,24 +27,16 @@ import com.example.probeui.core.commonComposables.CheckIcon
 import com.example.probeui.core.navigation.EActivityScreens
 import com.example.probeui.core.repo.Repositiry
 import com.example.probeui.ui.theme.GreenZDB
-import com.example.probeui.ui.theme.Typography
 
 @Composable
 fun CourseDetailsComposable(mNavController: NavController, mCourseId: String?) {
 
     val mScaffoldState = rememberScaffoldState()
     val mRepository = Repositiry()
-    var mCourse: Course? = null
-    val mCourseSections by mRepository.mCourseSections1.observeAsState()
 
-    // search in repository for the required Course
-    mRepository.mListOfActualCourses.value?.forEach() {
-        if (it.mId.toString() == mCourseId) mCourse = it
-    }
-    mRepository.mListOfFavouriteCourses.value?.forEach() {
-        if (it.mId.toString() == mCourseId) mCourse = it
-    }
-
+    val mCourse: Course? = mRepository.fetchCourseById(mCourseId)
+    val mListOfAllLections by mRepository.fetchLections().observeAsState()
+    val mThisCourseLections = mListOfAllLections?.filterNot { it.mCourseId.toString() != mCourseId }
 
     Scaffold(
         scaffoldState = mScaffoldState,
@@ -74,9 +67,11 @@ fun CourseDetailsComposable(mNavController: NavController, mCourseId: String?) {
         }
     ) {  // hier goes the content of BottomSheetScaffold
 
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
 
             mCourse?.let { course ->
                 Icon(
@@ -131,74 +126,117 @@ fun CourseDetailsComposable(mNavController: NavController, mCourseId: String?) {
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }
-                Text(
-                    text = "Inhalt",
-                    style = MaterialTheme.typography.h5,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
+            } // end of LET for Course Info
 
-                mCourseSections?.let{ section ->
-                    LazyColumn(){
-                        itemsIndexed(section) { index, sectionItem ->
+            // Lazy Column
+            Text(
+                text = "Inhalt",
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
 
-                            Column(){
-                                Text(
-                                    text = "Abschnitt ${index+1}",
-                                    fontWeight = FontWeight.Bold,
-                                    style = Typography.h6,
-                                )
-
-                                sectionItem.forEach(){ lection ->
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth().clickable(){mNavController.navigate(EActivityScreens.LectionScreen.name + "/${lection.mId}/${mCourseId}")},
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ){
-                                        Column(){
-                                            Row(){
-                                                Text(
-                                                    text = "${lection.mPositionInSection}",
-                                                    modifier = Modifier.width(32.dp)
-                                                )
-                                                Column(){
-                                                    Text(
-                                                        text = "${lection.mLectionName}",
-                                                        fontWeight = FontWeight.Bold
-                                                    )
-                                                    Text("${lection.mType}  ${lection.mDuration}")
-                                                }
-                                            }
-                                        }
-                                        val icon = when (lection.mType) {
-                                            ELectionType.VIDEO -> painterResource(id = R.drawable.play_circle)
-                                            ELectionType.AUDIO -> painterResource(id = R.drawable.audio_ic)
-                                            else -> painterResource(id = R.drawable.menu_book)
-                                        }
-                                        Icon(
-                                            icon,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(32.dp)
+            mThisCourseLections?.let { lection ->
+                LazyColumn() {
+                    itemsIndexed(lection) { index, lectionItem ->
+                        Column() {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable() { mNavController.navigate(EActivityScreens.LectionScreen.name + "/${lectionItem.mId}/${mCourseId}") },
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Column() {
+                                    Row() {
+                                        Text(
+                                            text = "${lectionItem.mPositionInSection}",
+                                            modifier = Modifier.width(32.dp)
                                         )
+                                        Column() {
+                                            Text(
+                                                text = "${lectionItem.mLectionName}",
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Text("${lectionItem.mType}  ${lectionItem.mDuration}")
+                                        }
                                     }
-
-
-                                    Divider()
                                 }
+                                val icon = when (lectionItem.mType) {
+                                    ELectionType.VIDEO -> painterResource(id = R.drawable.play_circle)
+                                    ELectionType.AUDIO -> painterResource(id = R.drawable.audio_ic)
+                                    else -> painterResource(id = R.drawable.menu_book)
+                                }
+                                Icon(
+                                    icon,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(32.dp)
+                                )
                             }
-
-                            Divider(Modifier.height(2.dp))
-
-                            
+                            Divider()
                         }
                     }
                 }
-
-
             }
 
+            /* alte Version
+
+            mCourseSections?.let{ section ->
+                LazyColumn(){
+                    itemsIndexed(section) { index, sectionItem ->
+
+                        Column(){
+                            Text(
+                                text = "Abschnitt ${index+1}",
+                                fontWeight = FontWeight.Bold,
+                                style = Typography.h6,
+                            )
+
+                            sectionItem.forEach(){ lection ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable() { mNavController.navigate(EActivityScreens.LectionScreen.name + "/${lection.mId}/${mCourseId}") },
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ){
+                                    Column(){
+                                        Row(){
+                                            Text(
+                                                text = "${lection.mPositionInSection}",
+                                                modifier = Modifier.width(32.dp)
+                                            )
+                                            Column(){
+                                                Text(
+                                                    text = "${lection.mLectionName}",
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                                Text("${lection.mType}  ${lection.mDuration}")
+                                            }
+                                        }
+                                    }
+                                    val icon = when (lection.mType) {
+                                        ELectionType.VIDEO -> painterResource(id = R.drawable.play_circle)
+                                        ELectionType.AUDIO -> painterResource(id = R.drawable.audio_ic)
+                                        else -> painterResource(id = R.drawable.menu_book)
+                                    }
+                                    Icon(
+                                        icon,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(32.dp)
+                                    )
+                                }
 
 
-        }
+                                Divider()
+                            }
+                        }
 
+                        Divider(Modifier.height(2.dp))
+
+
+                    }
+                }
+            }
+            */
+
+        } // end of Screen Column
     } // end of the content of BottomSheetScaffold
-
-}
+} // end of Composable

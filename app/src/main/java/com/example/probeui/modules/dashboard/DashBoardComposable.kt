@@ -14,6 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.probeui.core.commonComposables.CardRowComposable
 import com.example.probeui.core.navigation.EActivityScreens
+import com.example.probeui.core.repo.Repositiry
 import com.example.probeui.ui.theme.GreenZDB
 
 @Composable
@@ -22,8 +23,9 @@ fun DashBoardComposable(
     mNavController: NavController
 ) {
 
-    val mListOfActualCourses by mDahBoardViewModel.mListOfActualCourses.observeAsState()
-    val mListOfFavouriteCourses by mDahBoardViewModel.mListOfFavouriteCourses.observeAsState()
+    val mRepositiry = Repositiry()
+    val mListOfCourses by mRepositiry.fetchCourses().observeAsState()
+    val mListOfPopularCourses = mRepositiry.fetchPopularCourses()
 
     Scaffold(
         topBar = {
@@ -32,14 +34,6 @@ fun DashBoardComposable(
                 backgroundColor = GreenZDB,
                 contentColor = Color.White,
                 elevation = 32.dp,
-                navigationIcon = {
-                    /*
-                    IconButton(
-                    onClick = { println("-> Navigation Icon") },
-                    content = {Icon(Icons.Rounded.Person, contentDescription = "Check")}
-                    )
-                     */
-                },
                 actions = {
                     IconButton(
                         onClick = { mNavController.navigate(EActivityScreens.PersonScreen.name) },
@@ -58,7 +52,7 @@ fun DashBoardComposable(
                 style = MaterialTheme.typography.h6
             )
 
-            mListOfActualCourses?.let { listOfActualCourses ->
+            mListOfCourses?.let { listOfActualCourses ->
                 CardRowComposable(
                     mListOfCourses = listOfActualCourses,
                     mShowProgress = true,
@@ -74,9 +68,9 @@ fun DashBoardComposable(
                 style = MaterialTheme.typography.h6
             )
 
-            mListOfFavouriteCourses?.let { listOfFavouriteCourses ->
+            mListOfPopularCourses?.let { listOfPopularCourses ->
                 CardRowComposable(
-                    mListOfCourses = listOfFavouriteCourses,
+                    mListOfCourses = listOfPopularCourses,
                     mShowProgress = false,
                     mNavController = mNavController
                 )
