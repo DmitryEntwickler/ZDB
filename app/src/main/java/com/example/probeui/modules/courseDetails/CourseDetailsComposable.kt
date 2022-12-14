@@ -27,6 +27,7 @@ import com.example.probeui.core.commonComposables.CheckIcon
 import com.example.probeui.core.navigation.EActivityScreens
 import com.example.probeui.core.repo.Repositiry
 import com.example.probeui.ui.theme.GreenZDB
+import com.example.probeui.ui.theme.Typography
 
 @Composable
 fun CourseDetailsComposable(mNavController: NavController, mCourseId: String?) {
@@ -135,46 +136,48 @@ fun CourseDetailsComposable(mNavController: NavController, mCourseId: String?) {
                 modifier = Modifier.padding(vertical = 8.dp)
             )
 
-            mThisCourseLections?.let { lection ->
+            mThisCourseLections?.let { lectionsList ->
                 LazyColumn() {
-                    itemsIndexed(lection) { index, lectionItem ->
-                        Column() {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable() { mNavController.navigate(EActivityScreens.LectionScreen.name + "/${lectionItem.mId}/${mCourseId}") },
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Column() {
-                                    Row() {
+                    itemsIndexed(lectionsList) { index, lection ->
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable() { mNavController.navigate(EActivityScreens.LectionScreen.name + "/${lection.mId}/${mCourseId}") },
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column() {
+                                Row() {
+                                    Text(
+                                        text = "${lection.mPositionInSection}",
+                                        modifier = Modifier.width(32.dp)
+                                    )
+                                    Column() {
                                         Text(
-                                            text = "${lectionItem.mPositionInSection}",
-                                            modifier = Modifier.width(32.dp)
+                                            text = "${lection.mLectionName}",
+                                            fontWeight = FontWeight.Bold
                                         )
-                                        Column() {
-                                            Text(
-                                                text = "${lectionItem.mLectionName}",
-                                                fontWeight = FontWeight.Bold
-                                            )
-                                            Text("${lectionItem.mType}  ${lectionItem.mDuration}")
-                                        }
+                                        Text("${lection.mType}  ${lection.mDuration}")
                                     }
                                 }
-                                val icon = when (lectionItem.mType) {
-                                    ELectionType.VIDEO -> painterResource(id = R.drawable.play_circle)
-                                    ELectionType.AUDIO -> painterResource(id = R.drawable.audio_ic)
-                                    else -> painterResource(id = R.drawable.menu_book)
-                                }
-                                Icon(
-                                    icon,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(32.dp)
-                                )
                             }
-                            Divider()
-                        }
-                    }
-                }
+                            val icon = when (lection.mType) {
+                                ELectionType.VIDEO -> painterResource(id = R.drawable.play_circle)
+                                ELectionType.AUDIO -> painterResource(id = R.drawable.audio_ic)
+                                else -> painterResource(id = R.drawable.menu_book)
+                            }
+                            Icon(
+                                icon,
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        } // end of Row
+
+                        Divider()
+
+                    } // end of ItemsIndexed
+                } // end of Lazy Column
             }
 
             /* alte Version
