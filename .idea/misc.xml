@@ -3,8 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/audio_ic.xml" value="0.272" />
+        <entry key="app/src/main/res/drawable/menu_book.xml" value="0.272" />
         <entry key="app/src/main/res/drawable/outline_visibility_24.xml" value="0.272" />
         <entry key="app/src/main/res/drawable/outline_visibility_off_24.xml" value="0.272" />
+        <entry key="app/src/main/res/drawable/play_circle.xml" value="0.272" />
       </map>
     </option>
   </component>

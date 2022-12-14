@@ -8,5 +8,6 @@ enum class EActivityScreens {
         Search2Screen,
         Search3Screen,
         CourseDetailsScreen,
-        LoginScreen
+        LoginScreen,
+        LectionScreen
 }

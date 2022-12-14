@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.probeui.modules.courseDetails.CourseDetailsComposable
 import com.example.probeui.modules.dashboard.DashBoardComposable
+import com.example.probeui.modules.lection.LectionComposable
 import com.example.probeui.modules.login.LoginComposable
 import com.example.probeui.modules.person.PersonComposable
 import com.example.probeui.modules.probeUI.ProbeUIComposable
@@ -27,7 +28,7 @@ fun NavHostComposable() {
 
             NavHost(
                 navController = mNavController,
-                startDestination = EActivityScreens.LoginScreen.name,
+                startDestination = EActivityScreens.DashboardScreen.name,
                 builder = {
 
                     // add composables to the NavGraphBuilder
@@ -91,6 +92,21 @@ fun NavHostComposable() {
                             mShowBottomNavigation = false
                             CourseDetailsComposable(
                                 mNavController = mNavController,
+                                mCourseId = navBackStackEntry.arguments?.getString("courseId")
+                            )
+                        }
+                    )
+                    composable(
+                        route = EActivityScreens.LectionScreen.name + "/{lectionId}/{courseId}",
+                        arguments = listOf(
+                            navArgument("lectionId") { type = NavType.StringType },
+                            navArgument("courseId") { type = NavType.StringType }
+                        ),
+                        content = { navBackStackEntry ->
+                            mShowBottomNavigation = false
+                            LectionComposable(
+                                mNavController = mNavController,
+                                mLectionId = navBackStackEntry.arguments?.getString("lectionId"),
                                 mCourseId = navBackStackEntry.arguments?.getString("courseId")
                             )
                         }

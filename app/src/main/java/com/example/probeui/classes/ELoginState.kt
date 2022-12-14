@@ -1,6 +1,6 @@
 package com.example.probeui.classes
 
-enum class LoginState {
+enum class ELoginState {
     AllOk,
     EmailOkPassNotOk,
     PassOkEmailNotOk,

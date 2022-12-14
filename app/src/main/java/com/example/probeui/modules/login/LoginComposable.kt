@@ -1,30 +1,42 @@
 package com.example.probeui.modules.login
 
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.probeui.R
-import com.example.probeui.classes.LoginState
+import com.example.probeui.classes.ELoginState
 import com.example.probeui.core.navigation.EActivityScreens
 import com.example.probeui.ui.theme.*
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginComposable(mNavController: NavController) {
 
@@ -36,6 +48,7 @@ fun LoginComposable(mNavController: NavController) {
     var mEmailHasError by remember { mutableStateOf(false) }
 
     val mScaffoldState = rememberScaffoldState()
+    val mKeyboardController = LocalSoftwareKeyboardController.current
 
     Scaffold(
         scaffoldState = mScaffoldState,
@@ -98,7 +111,11 @@ fun LoginComposable(mNavController: NavController) {
                     errorCursorColor = Color.Red,
                     errorTrailingIconColor = Color.Red,
                     errorLabelColor = Color.Red
-                )
+                ),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = { mKeyboardController?.hide() }
+                ),
             )
 
             OutlinedTextField(
@@ -132,6 +149,10 @@ fun LoginComposable(mNavController: NavController) {
                     errorCursorColor = Color.Red,
                     errorTrailingIconColor = Color.Red,
                     errorLabelColor = Color.Red,
+                ),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = { mKeyboardController?.hide() }
                 )
             )
 
@@ -148,10 +169,10 @@ fun LoginComposable(mNavController: NavController) {
                     .fillMaxWidth()
                     .padding(8.dp),
                 onClick = {
-                    if (isLoginCorrect(mEmail, mPass) == LoginState.NothingOk) {mEmailHasError = true; mPassHasError = true }
-                    if (isLoginCorrect(mEmail, mPass) == LoginState.EmailOkPassNotOk) {mEmailHasError = false; mPassHasError = true }
-                    if (isLoginCorrect(mEmail, mPass) == LoginState.PassOkEmailNotOk) {mEmailHasError = true; mPassHasError = false }
-                    if (isLoginCorrect(mEmail, mPass) == LoginState.AllOk) { mNavController.navigate(EActivityScreens.DashboardScreen.name) }
+                    if (isLoginCorrect(mEmail, mPass) == ELoginState.NothingOk) {mEmailHasError = true; mPassHasError = true }
+                    if (isLoginCorrect(mEmail, mPass) == ELoginState.EmailOkPassNotOk) {mEmailHasError = false; mPassHasError = true }
+                    if (isLoginCorrect(mEmail, mPass) == ELoginState.PassOkEmailNotOk) {mEmailHasError = true; mPassHasError = false }
+                    if (isLoginCorrect(mEmail, mPass) == ELoginState.AllOk) { mNavController.navigate(EActivityScreens.DashboardScreen.name) }
                     },
                 shape = RoundedButtonShape.medium,
                 colors = ButtonDefaults.buttonColors(
@@ -165,6 +186,8 @@ fun LoginComposable(mNavController: NavController) {
                     style = Typography.button
                 )
             }
+
+
         }
     }
 
@@ -179,11 +202,11 @@ fun isPassCorrect(pass: String): Boolean {
     return (pass.isNotEmpty() && pass.length < 3)
 }
 
-fun isLoginCorrect(email: String, pass: String): LoginState {
-    var state = LoginState.NoState
-    if (isEmailCorrect(email) && isPassCorrect(pass)) state = LoginState.AllOk
-    if (!isEmailCorrect(email) && isPassCorrect(pass)) state = LoginState.PassOkEmailNotOk
-    if (isEmailCorrect(email) && !isPassCorrect(pass)) state = LoginState.EmailOkPassNotOk
-    if (!isEmailCorrect(email) && !isPassCorrect(pass)) state = LoginState.NothingOk
+fun isLoginCorrect(email: String, pass: String): ELoginState {
+    var state = ELoginState.NoState
+    if (isEmailCorrect(email) && isPassCorrect(pass)) state = ELoginState.AllOk
+    if (!isEmailCorrect(email) && isPassCorrect(pass)) state = ELoginState.PassOkEmailNotOk
+    if (isEmailCorrect(email) && !isPassCorrect(pass)) state = ELoginState.EmailOkPassNotOk
+    if (!isEmailCorrect(email) && !isPassCorrect(pass)) state = ELoginState.NothingOk
     return state
 }
