@@ -36,7 +36,7 @@ class Repositiry {
             // Fliesenleger 4 Lections in 2 Sections
                 Lection(1, 2, mLectionName = "Fliesen tragen", mType = ELectionType.TEXT, mSection = 1, mPositionInSection = 1, mDuration = "3:24", mUrl = "www.kurs1.com"),
                 Lection(2, 2, mLectionName = "Fliesen schneiden", mType = ELectionType.VIDEO, mSection = 1, mPositionInSection = 2, mDuration = "4:19", mUrl = "www.kurs2.com"),
-                Lection(3, 2, mLectionName = "Fliesen schneiden", mType = ELectionType.AUDIO, mSection = 2, mPositionInSection = 1, mDuration = "1:01", mUrl = "www.kurs3.com"),
+                Lection(3, 2, mLectionName = "Fliesen kleben", mType = ELectionType.AUDIO, mSection = 2, mPositionInSection = 1, mDuration = "1:01", mUrl = "www.kurs3.com"),
                 Lection(4, 2, mLectionName = "Fliesen schlagen", mType = ELectionType.TEXT, mSection = 2, mPositionInSection = 2, mDuration = "5:11", mUrl = "www.kurs4.com"),
             // Maler 9 Lections in 3 Sections
                 Lection(1, 3, mLectionName = "Regenbogen", mType = ELectionType.TEXT, mSection = 1, mPositionInSection = 1, mDuration = "3:24", mUrl = "www.kurs1.com"),
